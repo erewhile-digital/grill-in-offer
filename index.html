@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Komercpiedāvājums — Erewhile Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #181818;
+  --surface: #1e1e1e;
+  --border: rgba(255,255,255,0.08);
+  --border-mid: rgba(255,255,255,0.15);
+  --accent: #c8a96e;
+  --accent2: #e8c98a;
+  --text: #f0ede8;
+  --text-muted: #888880;
+  --text-dim: #555550;
+  --red: #e05a5a;
+  --green: #5aaa7a;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-serif: 'DM Serif Display', serif;
+  --font-ui: 'Syne', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; overflow-x: hidden; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+  max-width: 100vw;
+}
+
+/* CURSOR */
+.cursor {
+  position: fixed;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s, width 0.3s, height 0.3s, opacity 0.3s;
+}
+.cursor-ring {
+  position: fixed;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(200,169,110,0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.12s ease-out, width 0.3s, height 0.3s;
+}
+body:hover .cursor { opacity: 1; }
+
+/* NOISE OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+/* PROGRESS BAR */
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: var(--accent);
+  z-index: 999;
+  width: 0%;
+  transition: width 0.1s;
+}
+
+/* HEADER */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s, background 0.3s, backdrop-filter 0.3s;
+}
+header.scrolled {
+  border-color: var(--border);
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(20px);
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+.header-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 6rem 3rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg-line {
+  position: absolute;
+  top: 0; right: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+  opacity: 0.2;
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(200,169,110,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,169,110,0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+.hero-number {
+  font-family: var(--font-display);
+  font-size: clamp(120px, 20vw, 220px);
+  line-height: 0.85;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(200,169,110,0.15);
+  position: absolute;
+  top: 6rem;
+  right: 2rem;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-label {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(42px, 7vw, 96px);
+  line-height: 1.0;
+  max-width: 800px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.4s forwards;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-sub {
+  margin-top: 2rem;
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 480px;
+  line-height: 1.8;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.6s forwards;
+}
+
+.hero-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  opacity: 0;
+  animation: fadeUp 0.8s 0.8s forwards;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 3rem;
+}
+
+.hero-stat-val {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--accent);
+  display: block;
+}
+
+.hero-stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.scroll-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.scroll-hint::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--text-dim);
+  animation: scrollLine 2s infinite;
+}
+@keyframes scrollLine {
+  0%, 100% { transform: scaleX(1); opacity: 1; }
+  50% { transform: scaleX(0.3); opacity: 0.3; }
+}
+
+/* SECTIONS */
+.section {
+  padding: 5rem 3rem;
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+
+.section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 3rem;
+}
+
+.section-num {
+  font-family: var(--font-display);
+  font-size: 72px;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--border-mid);
+  transition: color 0.3s, -webkit-text-stroke 0.3s;
+}
+
+.section:hover .section-num {
+  -webkit-text-stroke: 1px var(--accent);
+}
+
+.section-meta { }
+
+.section-tag {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  max-width: 600px;
+}
+
+/* ITEMS TABLE */
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.items-table tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.items-table tr:hover {
+  background: rgba(200,169,110,0.03);
+}
+.items-table td {
+  padding: 1rem 0;
+  vertical-align: top;
+}
+.item-name-cell {
+  font-size: 14px;
+  color: var(--text);
+  width: 55%;
+}
+.item-note-cell {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding-left: 1rem;
+  width: 30%;
+  line-height: 1.5;
+}
+.item-price-cell {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  text-align: right;
+  white-space: nowrap;
+  width: 15%;
+}
+.item-price-cell.tbd {
+  color: var(--text-dim);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 12px;
+}
+.item-price-cell.included {
+  color: var(--text-dim);
+  font-weight: 400;
+  font-size: 12px;
+}
+.pvn-tag {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-weight: 400;
+  margin-left: 3px;
+}
+
+.subtotal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--border-mid);
+}
+.subtotal-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.subtotal-val { font-family: var(--font-display); font-size: 24px; color: var(--accent); letter-spacing: 0.05em; }
+
+/* SCENARIO GRID */
+.scenario-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.scenario-card {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.5rem;
+  transition: border-color 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.scenario-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--border);
+  transition: background 0.3s;
+}
+.scenario-card.recommended::before { background: var(--accent); }
+.scenario-card:hover { border-color: var(--border-mid); }
+
+.sc-badge {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+.sc-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  margin-bottom: 1.25rem;
+}
+.sc-rows { border-top: 1px solid var(--border); }
+.sc-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.sc-row span:last-child { color: var(--text); font-weight: 500; }
+.sc-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.sc-total-val { color: var(--accent); font-family: var(--font-display); font-size: 22px; letter-spacing: 0.03em; }
+.sc-note {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+/* EXPANDABLE BLOCKS */
+.expand-block {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-top: 1.5rem;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.expand-block:hover { border-color: var(--border-mid); }
+
+.expand-trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  cursor: none;
+  user-select: none;
+  transition: background 0.2s;
+}
+.expand-trigger:hover { background: var(--bg3); }
+
+.expand-trigger-title {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.expand-icon {
+  width: 24px; height: 24px;
+  border: 1px solid var(--border-mid);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.4s, border-color 0.3s;
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1;
+}
+.expand-block.open .expand-icon {
+  transform: rotate(45deg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.expand-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.expand-block.open .expand-body { max-height: 2000px; }
+
+.expand-content {
+  padding: 0 1.5rem 1.5rem;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+  margin-top: 0;
+}
+.expand-content p + p { margin-top: 1rem; }
+.expand-content strong { color: var(--text); font-weight: 500; }
+.expand-content ul {
+  list-style: none;
+  margin-top: 0.75rem;
+}
+.expand-content ul li {
+  padding: 0.4rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+}
+.expand-content ul li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-size: 12px;
+}
+
+/* TOTALS SECTION */
+.totals-section {
+  background: var(--bg2);
+  padding: 5rem 3rem;
+  border-top: 1px solid var(--border);
+}
+
+.totals-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.totals-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3rem;
+}
+
+.totals-title {
+  font-family: var(--font-serif);
+  font-size: clamp(36px, 5vw, 64px);
+}
+
+.totals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.total-card {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: border-color 0.3s, background 0.3s;
+}
+.total-card:hover {
+  border-color: var(--border-mid);
+  background: var(--bg3);
+}
+.total-card-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+.total-card-title {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+.total-card-val {
+  font-family: var(--font-display);
+  font-size: 36px;
+  color: var(--accent);
+  letter-spacing: 0.03em;
+}
+
+.grand-total {
+  padding: 2rem;
+  border: 1px solid var(--border-mid);
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, var(--bg3) 0%, var(--bg2) 100%);
+  position: relative;
+  overflow: hidden;
+}
+.grand-total::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.grand-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+.grand-val {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 72px);
+  color: var(--accent);
+  letter-spacing: 0.03em;
+}
+.grand-note {
+  font-size: 13px;
+  color: var(--text-dim);
+  max-width: 280px;
+  text-align: right;
+  line-height: 1.6;
+}
+
+/* MONTHLY */
+.monthly-section {
+  padding: 5rem 3rem;
+  border-top: 1px solid var(--border);
+}
+.monthly-inner { max-width: 1100px; margin: 0 auto; }
+.monthly-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.monthly-card {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+.monthly-card:hover { border-color: var(--border-mid); }
+.mc-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 0.5rem; }
+.mc-title { font-size: 14px; color: var(--text); margin-bottom: 1rem; line-height: 1.4; }
+.mc-val { font-family: var(--font-display); font-size: 28px; color: var(--accent); }
+
+/* FOOTER */
+footer {
+  padding: 3rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-logo { font-family: var(--font-display); font-size: 18px; color: var(--accent); letter-spacing: 0.1em; }
+.footer-meta { font-size: 12px; color: var(--text-dim); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* NOTES */
+.notes-box {
+  border-left: 2px solid var(--accent);
+  padding: 1rem 1.5rem;
+  margin-top: 2rem;
+  background: rgba(200,169,110,0.04);
+  border-radius: 0 4px 4px 0;
+}
+.notes-box p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.notes-box p + p { margin-top: 0.5rem; }
+
+/* DIVIDER LINE */
+.line-divider {
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0.3;
+  margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+  header { padding: 1.25rem 1.5rem; }
+  .hero { padding: 5rem 1.5rem 3rem; overflow: hidden; }
+  .hero-number { display: none; }
+  .hero-bg-line { display: none; }
+  .section { padding: 3.5rem 1.5rem; }
+  .section-inner { max-width: 100%; }
+  .section-header { grid-template-columns: 1fr; gap: 0.5rem; }
+  .section-num { font-size: 48px; }
+  .scenario-grid { grid-template-columns: 1fr; }
+  .totals-section, .monthly-section { padding: 3.5rem 1.5rem; }
+  .totals-grid { grid-template-columns: 1fr; }
+  .monthly-grid { grid-template-columns: 1fr; }
+  .grand-total { flex-direction: column; gap: 1rem; align-items: flex-start; }
+  .grand-note { text-align: left; }
+  .hero-stats { gap: 2rem; flex-wrap: wrap; }
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+  .items-table { table-layout: fixed; width: 100%; }
+  .items-table .item-note-cell { display: none; }
+  .items-table .item-name-cell { width: 70%; word-break: break-word; }
+  .items-table .item-price-cell { width: 30%; }
+  footer { flex-direction: column; gap: 1rem; text-align: center; }
+  .subtotal-row { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+  .totals-inner, .monthly-inner { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" style="
+  position: fixed; inset: 0; z-index: 9999;
+  background: #0a0a0a;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+">
+  <div style="width: 100%; max-width: 360px; padding: 0 2rem;">
+    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #c8a96e; letter-spacing: 0.1em; margin-bottom: 2.5rem; text-align: center;">EREWHILE DIGITAL</div>
+
+    <div style="margin-bottom: 1.25rem;">
+      <label style="display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #555550; margin-bottom: 0.5rem;">Lietotājvārds</label>
+      <input id="loginUser" type="text" autocomplete="off" style="
+        width: 100%; padding: 0.75rem 1rem;
+        background: #181818; border: 1px solid rgba(255,255,255,0.08);
+        color: #f0ede8; font-family: 'Syne', sans-serif; font-size: 14px;
+        border-radius: 4px; outline: none;
+        transition: border-color 0.2s;
+      " onfocus="this.style.borderColor='rgba(200,169,110,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'" onkeydown="if(event.key==='Enter') document.getElementById('loginPass').focus()">
+    </div>
+
+    <div style="margin-bottom: 1.75rem;">
+      <label style="display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #555550; margin-bottom: 0.5rem;">Parole</label>
+      <input id="loginPass" type="password" autocomplete="off" style="
+        width: 100%; padding: 0.75rem 1rem;
+        background: #181818; border: 1px solid rgba(255,255,255,0.08);
+        color: #f0ede8; font-family: 'Syne', sans-serif; font-size: 14px;
+        border-radius: 4px; outline: none;
+        transition: border-color 0.2s;
+      " onfocus="this.style.borderColor='rgba(200,169,110,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'" onkeydown="if(event.key==='Enter') attemptLogin()">
+    </div>
+
+    <button onclick="attemptLogin()" style="
+      width: 100%; padding: 0.875rem;
+      background: #c8a96e; border: none; border-radius: 4px;
+      font-family: 'Bebas Neue', sans-serif; font-size: 16px;
+      letter-spacing: 0.1em; color: #0a0a0a;
+      cursor: pointer; transition: background 0.2s;
+    " onmouseover="this.style.background='#e8c98a'" onmouseout="this.style.background='#c8a96e'">
+      IENĀKT
+    </button>
+
+    <div id="loginError" style="
+      margin-top: 1rem; font-size: 12px; color: #e05a5a;
+      text-align: center; opacity: 0; transition: opacity 0.3s;
+    ">Nepareizs lietotājvārds vai parole</div>
+  </div>
+</div>
+
+<div id="mainContent" style="display:none;">
+<div class="cursor" id="cursor"></div><div class="cursor-ring" id="cursorRing"></div>
+<div class="progress-bar" id="progress"></div>
+
+<header id="header">
+  <div class="logo">EREWHILE DIGITAL</div>
+  <div class="header-meta">Komercpiedāvājums · 2026</div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-line"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-number">€</div>
+  <div class="hero-label">Erewhile Digital · Jēkabpils · 2026</div>
+  <h1 class="hero-title">Griļbārs &<br><em>Ūdens atrakciju</em><br>parks</h1>
+  <p class="hero-sub">Digitālais risinājums no vietnes izstrādes un ēdienkartes līdz satura veidošanai, reklamēšanai un drukātajiem materiāliem.</p>
+  <div class="hero-bottom">
+    <div></div>
+    <div class="scroll-hint">Ritiniet zemāk</div>
+  </div>
+</section>
+
+<!-- BLOKS 1: VIETNE -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-num">01</div>
+      <div class="section-meta">
+        <div class="section-tag">Izstrāde</div>
+        <h2 class="section-title">Vietnes un<br>infrastruktūras izstrāde</h2>
+        <p class="section-desc">Viss, kas nepieciešams, lai iestāde darbotos tiešsaistē — no vizuālā dizaina līdz pasūtījumu sistēmai un administrēšanai.</p>
+      </div>
+    </div>
+    <table class="items-table reveal">
+      <tr>
+        <td class="item-name-cell">Administrācijas panelis</td>
+        <td class="item-note-cell">Personālam ērts rīks — visas izmaiņas panelī automātiski atspoguļojas digitālajā ēdienkartē (QR un vietne) un Takeaway sistēmā</td>
+        <td class="item-price-cell">1 320 €</td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Sertifikācija un pakalpojumu integrācija</td>
+        <td class="item-note-cell">Stripe iestatīšana, GDPR, e-pasta rēķini, klientu datubāze, datu glabāšana, testēšana</td>
+        <td class="item-price-cell">480 €</td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Galvenā vietne</td>
+        <td class="item-note-cell">Griļbāra un ūdens atrakciju parka prezentācija · 3 valodas · desktop / tablet / mobils · iebūvēta digitālā ēdienkarte</td>
+        <td class="item-price-cell">460 €</td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Digitālā ēdienkarte (QR)</td>
+        <td class="item-note-cell">Klients skenē QR kodu uz galda, izvēlas ēdienus, apmaksā ar karti / Apple Pay / Google Pay</td>
+        <td class="item-price-cell">320 €</td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Domēns</td>
+        <td class="item-note-cell">Mājas lapas adrese · gada abonements</td>
+        <td class="item-price-cell">15 €<span class="pvn-tag">/gadā</span></td>
+      </tr>
+    </table>
+    <div class="subtotal-row reveal">
+      <span class="subtotal-label">Kopā</span>
+      <div style="text-align:right;">
+        <span class="subtotal-val">2 595 €</span>
+        <div style="font-size:11px; color: var(--text-dim); margin-top:3px;">Erewhile Digital darbs — 2 580 € · Izmaksas (domēns) — 15 €</div>
+      </div>
+    </div>
+    <div class="expand-block reveal">
+      <div class="expand-trigger" onclick="toggleExpand(this)">
+        <span class="expand-trigger-title">Kas iekļauts — detalizēts apraksts</span>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="expand-body">
+        <div class="expand-content">
+          <p><strong>Administrācijas panelis</strong> ir centrālais vadības rīks personālam. Visas izmaiņas — paslēptas pozīcijas, cenu korekcijas, dienas akcijas — uzreiz atspoguļojas gan QR ēdienkartē, gan vietnes Takeaway sadaļā. Sistēma saglabā žurnālu par visām darbībām.</p>
+          <p><strong>Sertifikācija un integrācija</strong> ietver: Stripe apmaksas iestatīšanu (nauda nonāk tieši iestādes kontā), GDPR atbilstību, e-pasta rēķinu sistēmu, klientu e-pastu un tālruņu datubāzi mārketingam, datu glabāšanas iestatīšanu un pilnu sistēmas testēšanu. Stripe komisija: 1,4% + €0,25 par darījumu — nav ikmēneša maksas.</p>
+          <p><strong>Galvenā vietne</strong> prezentē griļbāru un ūdens atrakciju parku. Darbojas latviešu, krievu un angļu valodā. Pielāgota datoriem, planšetēm un telefoniem.</p>
+          <p><strong>Digitālā ēdienkarte</strong>: klients skenē QR kodu uz galda, izvēlas ēdienus, apmaksā ar kredītkarti, Apple Pay vai Google Pay. Ūdens atrakciju parka biļetes var iegādāties iepriekš. Alkoholu klients pasūta pie kases.</p>
+          <p><strong>Take-Away opcija</strong> ļauj pasūtīt ēdienu no mājām un ierasties tieši laikā. Noslogotos brīžos personāls to izslēdz ar vienu pogu.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOKS 2: SATURS UN REKLĀMA -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-num">02</div>
+      <div class="section-meta">
+        <div class="section-tag">Saturs un reklāma</div>
+        <h2 class="section-title">Video, foto &<br>Instagram</h2>
+        <p class="section-desc">Satura veidošana pirmā mēneša startam, publicēšana Instagram un reklāmas kampaņas palaišana.</p>
+      </div>
+    </div>
+    <table class="items-table reveal">
+      <tr>
+        <td class="item-name-cell">Drona noma un pilotēšana</td>
+        <td class="item-note-cell">Gaisa kadri no augšas — griļbārs un ūdens atrakciju parks</td>
+        <td class="item-price-cell">150 €</td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Filmēšana un montāža — 5 video Reels</td>
+        <td class="item-note-cell">Scenārijs, uzņemšana ar iPhone, montāža</td>
+        <td class="item-price-cell">150 €</td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Ēdienu fotografēšana</td>
+        <td class="item-note-cell">Uzņemšana ar iPhone, papildu apgaismojums, apstrāde</td>
+        <td class="item-price-cell">100 €</td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Instagram — kopiraiting un publicēšana</td>
+        <td class="item-note-cell">Stories, Reels, karuseļu un standartu postu satura oformlēšana un publicēšana</td>
+        <td class="item-price-cell">80 €</td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Reklāmas kampaņas sagatavošana</td>
+        <td class="item-note-cell">Mērķauditorijas iestatīšana, materiālu sagatavošana</td>
+        <td class="item-price-cell">50 €</td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Reklāmas budžets Instagram</td>
+        <td class="item-note-cell">Tiešais reklāmas apjoms platformā</td>
+        <td class="item-price-cell">350 €<span class="pvn-tag">+ PVN</span></td>
+      </tr>
+    </table>
+    <div class="subtotal-row reveal">
+      <span class="subtotal-label">Kopā</span>
+      <div style="text-align:right;">
+        <span class="subtotal-val">875 €</span>
+        <div style="font-size:11px; color: var(--text-dim); margin-top:3px;">Erewhile Digital darbs — 375 € · Izmaksas (drona noma 150 €, foto 100 €, reklāmas budžets 350 € + PVN)</div>
+      </div>
+    </div>
+    <div class="expand-block reveal">
+      <div class="expand-trigger" onclick="toggleExpand(this)">
+        <span class="expand-trigger-title">Reklāmas stratēģija un vasaras notikumi</span>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="expand-body">
+        <div class="expand-content">
+          <p><strong>Trīs galvenie reklāmas virzieni:</strong></p>
+          <ul>
+            <li><strong>Vasaras pieredze pie ezera</strong> — ģimenes atpūta, ūdens aktivitātes, garšīga grila gaļa</li>
+            <li><strong>Take-Away</strong> — ātrs un ērts pasūtījums, paņemams pa ceļam</li>
+            <li><strong>Ūdens atrakciju parks</strong> — unikāla vasaras aktivitāte bērniem un pieaugušajiem</li>
+          </ul>
+          <p><strong>Klientu Stories aktivizācija:</strong> Speciālas uzlīmes uz šķīvjiem ar aicinājumu publicēt savu foto ar iestādes tagu. Labākās Stories katru mēnesi tiek apbalvotas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOKS 3: DRUKA -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-num">03</div>
+      <div class="section-meta">
+        <div class="section-tag">Mārketings</div>
+        <h2 class="section-title">Drukātie<br>materiāli</h2>
+        <p class="section-desc">Uzlīmes un flajeri — zīmola klātbūtnei iestādē un klientu aktivizācijai sociālajos tīklos.</p>
+      </div>
+    </div>
+    <table class="items-table reveal">
+      <tr>
+        <td class="item-name-cell">Dizaina izstrāde</td>
+        <td class="item-note-cell">Visu materiālu maketēšana</td>
+        <td class="item-price-cell">150 €</td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Uzlīmes ar logotipu — 10 000 gab.</td>
+        <td class="item-note-cell">⌀5 cm, glancētas · logotips + kontaktinfo</td>
+        <td class="item-price-cell">238 €<span class="pvn-tag">+ PVN</span></td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Call-to-action uzlīmes — 5 000 gab.</td>
+        <td class="item-note-cell">⌀5 cm · aicinājums publicēt Stories ar iestādes tagu</td>
+        <td class="item-price-cell">147 €<span class="pvn-tag">+ PVN</span></td>
+      </tr>
+      <tr>
+        <td class="item-name-cell">Flajeri A6 divpusēji — 5 000 gab.</td>
+        <td class="item-note-cell">Take-away maisiņiem · griļbārs + ūdens atrakciju parks</td>
+        <td class="item-price-cell">225 €<span class="pvn-tag">+ PVN</span></td>
+      </tr>
+    </table>
+    <div class="subtotal-row reveal">
+      <span class="subtotal-label">Druka kopā</span>
+      <div style="text-align:right;">
+        <span class="subtotal-val">760 €</span>
+        <div style="font-size:11px; color: var(--text-dim); margin-top:3px;">Erewhile Digital darbs — 150 € · Izmaksas (druka) — 610 € + PVN</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KOPSAVILKUMS -->
+<section class="totals-section">
+  <div class="totals-inner">
+    <div class="totals-header reveal">
+      <h2 class="totals-title">Kopsavilkums</h2>
+      <div style="font-size:13px; color: var(--text-muted); text-align: right; line-height: 1.8;">
+        Erewhile Digital pakalpojumi — bez PVN<br>
+        PVN (21%) — reklāmas budžets un druka
+      </div>
+    </div>
+
+    <div class="totals-grid reveal">
+      <div class="total-card">
+        <div class="total-card-label">01 — Vietne un infrastruktūra</div>
+        <div class="total-card-val">2 595 €</div>
+        <div style="margin-top:0.75rem; display:flex; flex-direction:column; gap:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0; border-bottom:1px solid var(--border);">
+            <span style="color:var(--text-muted);">Erewhile Digital darbs</span>
+            <span style="color:var(--text);">2 580 €</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0;">
+            <span style="color:var(--text-muted);">Izmaksas (domēns)</span>
+            <span style="color:var(--text);">15 €</span>
+          </div>
+        </div>
+      </div>
+      <div class="total-card">
+        <div class="total-card-label">02 — Saturs un reklāma</div>
+        <div class="total-card-val">880 €</div>
+        <div style="margin-top:0.75rem; display:flex; flex-direction:column; gap:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0; border-bottom:1px solid var(--border);">
+            <span style="color:var(--text-muted);">Erewhile Digital darbs</span>
+            <span style="color:var(--text);">380 €</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0;">
+            <span style="color:var(--text-muted);">Izmaksas (drona noma, foto, reklāma + PVN)</span>
+            <span style="color:var(--text);">500 €</span>
+          </div>
+        </div>
+      </div>
+      <div class="total-card">
+        <div class="total-card-label">03 — Drukātie materiāli</div>
+        <div class="total-card-val">760 €</div>
+        <div style="margin-top:0.75rem; display:flex; flex-direction:column; gap:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0; border-bottom:1px solid var(--border);">
+            <span style="color:var(--text-muted);">Erewhile Digital darbs</span>
+            <span style="color:var(--text);">150 €</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0;">
+            <span style="color:var(--text-muted);">Izmaksas (druka + PVN)</span>
+            <span style="color:var(--text);">610 €</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grand-total reveal">
+      <div>
+        <div class="grand-label">Kopā</div>
+        <div class="grand-val">4 235 €</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">no tiem:</div>
+        <div style="font-size:14px; color:var(--text); margin-bottom:4px;">Erewhile Digital darbs — <strong>3 110 €</strong></div>
+        <div style="font-size:13px; color:var(--text-dim);">Izmaksas (domēns, drona noma, foto, druka, reklāma) — <strong>1 125 €</strong> + daļa PVN</div>
+      </div>
+    </div>
+
+    <div class="notes-box reveal">
+      <p>PVN (21%) tiek piemērots: Instagram reklāmas budžetam un drukātajiem materiāliem. Erewhile Digital pakalpojumi — bez PVN.</p>
+      <p>Stripe komisija (1,4% + €0,25 par darījumu ES kartēm) tiek ieturēta automātiski no katra pasūtījuma.</p>
+    </div>
+  </div>
+</section>
+
+<!-- IKMĒNEŠA -->
+<section class="monthly-section">
+  <div class="monthly-inner">
+    <div class="section-header reveal" style="margin-bottom: 1rem;">
+      <div class="section-num">∞</div>
+      <div class="section-meta">
+        <div class="section-tag">Ikmēneša sadarbība</div>
+        <h2 class="section-title">No 2. mēneša</h2>
+        <p class="section-desc">Saturu un publicēšanu veic jūsu komanda patstāvīgi. Mēs nodrošinām tehnisko bāzi un reklāmas optimizāciju.</p>
+      </div>
+    </div>
+
+    <div class="monthly-grid reveal">
+      <div class="monthly-card">
+        <div class="mc-label">Vietnes uzturēšana</div>
+        <div class="mc-title">Serveris, sertifikāti, atjauninājumi, uzraudzība</div>
+        <div class="mc-val">75 €</div>
+      </div>
+      <div class="monthly-card">
+        <div class="mc-label">Tehniskās izmaiņas · pēc pieprasījuma</div>
+        <div class="mc-title">Jaunas integrācijas, labojumi, papildinājumi</div>
+        <div class="mc-val">25 € <span style="font-size:14px; color:var(--text-dim);">/ h</span></div>
+      </div>
+      <div class="monthly-card">
+        <div class="mc-label">Reklāmas optimizācija · pēc izvēles</div>
+        <div class="mc-title">Instagram kampaņas pielāgošana + reklāmas budžets</div>
+        <div class="mc-val">50 € <span style="font-size:14px; color:var(--text-dim);">+ budžets</span></div>
+      </div>
+      <div class="monthly-card">
+        <div class="mc-label">Stripe · iestādes izmaksas</div>
+        <div class="mc-title">1,4% + €0,25 par katru darījumu · nav fiksētas ikmēneša maksas</div>
+        <div class="mc-val" style="font-size:16px; font-family:var(--font-ui); color:var(--text-muted);">pēc apjoma</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">EREWHILE DIGITAL</div>
+  <div class="footer-meta">Komercpiedāvājums · Jēkabpils · 2026 · LV / RU / EN</div>
+</footer>
+
+</div><!-- /mainContent -->
+
+<script>
+// LOGIN
+function attemptLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginError');
+  if (u === 'Inita' && p === '216587') {
+    const ls = document.getElementById('loginScreen');
+    ls.style.transition = 'opacity 0.4s';
+    ls.style.opacity = '0';
+    setTimeout(() => {
+      ls.style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+    }, 400);
+  } else {
+    err.style.opacity = '1';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginPass').focus();
+    setTimeout(() => { err.style.opacity = '0'; }, 2500);
+  }
+}
+
+// CURSOR
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animCursor() {
+  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+document.querySelectorAll('a, button, .expand-trigger, .scenario-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.style.width='16px'; cursor.style.height='16px'; ring.style.width='48px'; ring.style.height='48px'; });
+  el.addEventListener('mouseleave', () => { cursor.style.width='8px'; cursor.style.height='8px'; ring.style.width='32px'; ring.style.height='32px'; });
+});
+
+// HEADER
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 60);
+  const prog = document.getElementById('progress');
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  prog.style.width = pct + '%';
+});
+
+// REVEAL
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), 60);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+reveals.forEach(el => obs.observe(el));
+
+// EXPAND
+function toggleExpand(trigger) {
+  const block = trigger.closest('.expand-block');
+  block.classList.toggle('open');
+}
+</script>
+</body>
+</html>
